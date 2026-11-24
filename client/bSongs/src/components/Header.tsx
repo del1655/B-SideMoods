@@ -10,7 +10,7 @@ export default function Header() {
           className="size-14 object-contain md:size-20"
         />
         <span className="font-display text-2xl font-semibold tracking-wide text-plum md:text-3xl">
-          ARMY Vault
+          B-CDSongs 
         </span>
       </div>
       <span className="rounded-full border border-plum/30 px-3 py-1 text-xs font-medium tracking-[0.2em] text-plum/70">

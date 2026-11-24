@@ -32,7 +32,7 @@ export default function ChooseMood({ selected, onSelect, onContinue, onBack }: P
                     Pick the album that matches your mood.
                 </p>
 
-                {/* El resto de tu código permanece igual */}
+
 
                 <fieldset className="mt-10 w-full min-w-0">
                     <legend className="sr-only">Choose your mood</legend>

@@ -7,6 +7,7 @@ export type Song = {
   moods: Mood[];
   description: string;
   spotifyUrl: string;
+  youtubeUrl: string;
   cover: string;
 };
 

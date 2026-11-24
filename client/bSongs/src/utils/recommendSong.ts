@@ -1,17 +1,25 @@
-import { songs as catalog } from "../data/songs";
+import { songs } from "../data/songs";
 import type { Mood, Song } from "../types/song";
+
+export function getSongsByMood(mood: Mood): Song[] {
+  return songs.filter((song) => song.moods.includes(mood));
+}
 
 export function recommendSong(
   mood: Mood,
-  excludeId?: string,
-  songs: Song[] = catalog,
+  excludedIds: string[] = []
 ): Song | null {
-  const matches = songs.filter((song) => song.moods.includes(mood));
+  const availableSongs = getSongsByMood(mood).filter(
+    (song) => !excludedIds.includes(song.id)
+  );
 
-  if (matches.length === 0) return null;
+  if (availableSongs.length === 0) {
+    return null;
+  }
 
-  const candidates =
-    matches.length > 1 ? matches.filter((song) => song.id !== excludeId) : matches;
+  const randomIndex = Math.floor(
+    Math.random() * availableSongs.length
+  );
 
-  return candidates[Math.floor(Math.random() * candidates.length)];
+  return availableSongs[randomIndex];
 }

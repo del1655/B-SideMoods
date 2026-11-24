@@ -1,65 +1,164 @@
 import { useState } from "react";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { Shuffle } from "lucide-react";
 import Header from "../components/Header";
 import SongCard from "../components/SongCard";
-import { primaryButtonStyles } from "../components/buttonStyles";
+import BackButton from "../components/BackButton";
+import ListenPlatforms from "../components/ListenPlatforms";
+import PrimaryButton from "../components/PrimaryButton";
 import { moods } from "../data/moods";
-import { recommendSong } from "../utils/recommendSong";
-import type { Mood } from "../types/song";
+import {
+  recommendSong,
+  getSongsByMood,
+} from "../utils/recommendSong";
+import type { Mood, Song } from "../types/song";
 
 type Props = {
   mood: Mood;
   onBack: () => void;
 };
 
-export default function YourSong({ mood, onBack }: Props) {
-  const [song, setSong] = useState(() => recommendSong(mood));
-  const moodLabel = moods.find((m) => m.id === mood)?.label ?? mood;
+type RecommendationState = {
+  song: Song | null;
+  history: string[];
+};
 
-  const handleAnother = () => setSong(recommendSong(mood, song?.id));
+export default function YourSong({ mood, onBack }: Props) {
+  const moodLabel =
+    moods.find((m) => m.id === mood)?.label ?? mood;
+
+  const totalSongs = getSongsByMood(mood).length;
+
+  // Initial recommendation
+  const [recommendation, setRecommendation] =
+    useState<RecommendationState>(() => {
+      const firstSong = recommendSong(mood);
+
+      return {
+        song: firstSong,
+        history: firstSong ? [firstSong.id] : [],
+      };
+    });
+
+  const { song, history } = recommendation;
+
+  // Recommend a different song
+  const handleAnother = () => {
+    if (totalSongs <= 1) return;
+
+    setRecommendation((previous) => {
+      const nextSong = recommendSong(
+        mood,
+        previous.history
+      );
+
+      // There are still undiscovered songs
+      if (nextSong) {
+        return {
+          song: nextSong,
+          history: [...previous.history, nextSong.id],
+        };
+      }
+
+      // Start a new round without repeating
+      // the last song immediately
+      const restartedSong = recommendSong(
+        mood,
+        previous.song ? [previous.song.id] : []
+      );
+
+      if (!restartedSong) return previous;
+
+      return {
+        song: restartedSong,
+        history: [restartedSong.id],
+      };
+    });
+  };
 
   return (
     <>
       <Header />
 
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-6 pb-8 text-center md:px-8 md:pb-10">
+      {/* Back navigation */}
+      <div className="mx-auto w-full max-w-6xl px-6 pt-2 md:px-12 md:pt-4">
+        <BackButton
+          onClick={onBack}
+          label="Choose a different mood"
+        />
+      </div>
+
+      <main className="mx-auto flex w-full max-w-3xl flex-1 animate-fade-in flex-col items-center px-6 pb-8 text-center motion-reduce:animate-none md:px-8 md:pb-10">
+
+        {/* Heading */}
         <h1 className="font-display text-3xl leading-tight text-plum md:text-5xl">
           This one's for you.
         </h1>
+
         <p className="mt-2 text-base text-ink/80 md:mt-3 md:text-lg">
           A little song for how you're feeling.
         </p>
 
-        {/* Anuncia el cambio de canción a lectores de pantalla */}
+        {/* Accessibility */}
         <p className="sr-only" aria-live="polite">
           {song ? `${song.title} by ${song.artist}` : ""}
         </p>
 
         {song ? (
           <>
+            {/* Song card */}
             <div className="mt-6 w-full md:mt-10">
-              <SongCard key={song.id} song={song} moodLabel={moodLabel} />
+              <SongCard
+                key={song.id}
+                song={song}
+                moodLabel={moodLabel}
+              />
             </div>
 
-            <div className="mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row md:mt-10">
-              <a
-                href={song.spotifyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${primaryButtonStyles} inline-flex items-center justify-center gap-2`}
-              >
-                Listen on Spotify
-                <ExternalLink size={16} aria-hidden="true" />
-                <span className="sr-only">(opens in a new tab)</span>
-              </a>
+            {/* Streaming platforms */}
+            <div className="mt-8 flex w-full justify-center">
+              <ListenPlatforms song={song} />
+            </div>
 
-              <button
-                type="button"
+            {/* Another recommendation */}
+            <div className="mt-5 w-full max-w-md">
+              <PrimaryButton
                 onClick={handleAnother}
-                className="rounded-full border border-plum px-8 py-3.5 font-medium text-plum transition duration-200 hover:bg-lilac/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-dusty motion-reduce:transition-none md:py-4"
+                disabled={totalSongs <= 1}
+                className="w-full"
               >
-                Try another song
-              </button>
+                <span className="flex items-center justify-center gap-3">
+                  <Shuffle
+                    size={18}
+                    strokeWidth={1.8}
+                  />
+                  Try another song
+                </span>
+              </PrimaryButton>
+            </div>
+
+            {/* Track counter */}
+            <div className="mt-5 flex flex-col items-center gap-2">
+              <p
+                aria-live="polite"
+                className="font-mono text-[10px] tracking-[0.15em] text-dusty md:text-xs"
+              >
+                TRACK {String(history.length).padStart(2, "0")}
+                {" · "}
+                {totalSongs} IN THIS MOOD
+              </p>
+
+              {/* Progress indicator */}
+              <div
+                aria-hidden="true"
+                className="h-1 w-28 overflow-hidden rounded-full bg-lilac/40"
+              >
+                <div
+                  className="h-full rounded-full bg-dusty transition-all duration-500 motion-reduce:transition-none"
+                  style={{
+                    width: `${(history.length / totalSongs) * 100}%`,
+                  }}
+                />
+              </div>
             </div>
           </>
         ) : (
@@ -67,15 +166,6 @@ export default function YourSong({ mood, onBack }: Props) {
             We couldn't find a song for this mood yet.
           </p>
         )}
-
-        <button
-          type="button"
-          onClick={onBack}
-          className="mt-6 inline-flex items-center gap-2 rounded text-sm font-medium text-plum underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-dusty md:mt-8"
-        >
-          <ArrowLeft size={16} aria-hidden="true" />
-          Choose a different mood
-        </button>
       </main>
     </>
   );

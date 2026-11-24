@@ -28,11 +28,11 @@ export default function RetroCdPlayer() {
         {/* Player branding */}
         <div className="mb-4 flex items-center justify-between">
           <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-plum">
-            ARMY VAULT
+            B-CDSongs
           </span>
 
           <span className="font-mono text-[9px] tracking-widest text-plum/60">
-            AV–07
+            BC-07
           </span>
         </div>
 
