@@ -4,7 +4,7 @@ export default function RetroCdPlayer() {
   return (
     <div
       aria-hidden="true"
-      className="relative mx-auto w-[85%] max-w-[340px] sm:max-w-[400px] md:w-[90%] md:max-w-[480px] lg:max-w-[560px] xl:max-w-[600px]"
+      className="relative mx-auto w-[70%] max-w-[260px] sm:max-w-[400px] md:w-[90%] md:max-w-[480px] lg:max-w-[560px] xl:max-w-[600px]"
     >
       {/* Ambient glow */}
       <div className="absolute inset-0 scale-110 rounded-full bg-lilac/40 blur-3xl" />
