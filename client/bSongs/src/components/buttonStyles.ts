@@ -1,0 +1,2 @@
+export const primaryButtonStyles =
+  "rounded-full bg-plum px-8 py-3.5 font-medium text-paper transition duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-dusty/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-dusty disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:py-4";

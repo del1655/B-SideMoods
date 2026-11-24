@@ -1,9 +1,40 @@
+import { useState } from "react";
+import Welcome from "./pages/Welcome";
+import ChooseMood from "./pages/ChooseMood";
+import YourSong from "./pages/YourSong";
+import type { Mood } from "./types/song";
+
+
+type Screen = "welcome" | "mood" | "song";
+
 export default function App() {
+  const [screen, setScreen] = useState<Screen>("welcome");
+  const [mood, setMood] = useState<Mood | null>(null);
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-3">
-      <h1 className="font-display text-6xl text-plum">ARMY Vault</h1>
-      <p className="font-display italic text-2xl text-dusty">Your mood. Your BTS song.</p>
-      <button className="rounded-full bg-plum px-8 py-3 text-paper">Find my song</button>
-    </main>
-  )
+    <div className="flex min-h-dvh flex-col">
+      {screen === "welcome" && (
+        <Welcome onStart={() => setScreen("mood")} />
+      )}
+
+      {screen === "mood" && (
+        <ChooseMood
+          selected={mood}
+          onSelect={setMood}
+          onContinue={() => setScreen("song")}
+          onBack={() => {
+            setMood(null);
+            setScreen("welcome");
+          }}
+        />
+      )}
+
+      {screen === "song" && mood && (
+        <YourSong
+          mood={mood}
+          onBack={() => setScreen("mood")}
+        />
+      )}
+    </div>
+  );
 }
