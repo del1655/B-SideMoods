@@ -2,10 +2,10 @@ import { Check } from "lucide-react";
 import type { Mood, MoodOption } from "../types/song";
 
 // Album covers
-import nostalgicCover from "../../public/images/moods/Nostalgic.png";
-import motivatedCover from "../../public/images/moods/Motivated.png";
-import comfortCover from "../../public/images/moods/comfort.png";
-import happyCover from "../../public/images/moods/happy.png";
+import nostalgicCover from "../../public/images/moods/Nostalgic.webp";
+import motivatedCover from "../../public/images/moods/Motivated.webp";
+import comfortCover from "../../public/images/moods/comfort.webp";
+import happyCover from "../../public/images/moods/happy.webp";
 
 const albumCovers: Record<Mood, string> = {
   nostalgic: nostalgicCover,
