@@ -4,7 +4,6 @@ import ChooseMood from "./pages/ChooseMood";
 import YourSong from "./pages/YourSong";
 import type { Mood } from "./types/song";
 
-
 type Screen = "welcome" | "mood" | "song";
 
 export default function App() {
@@ -12,7 +11,9 @@ export default function App() {
   const [mood, setMood] = useState<Mood | null>(null);
 
   return (
+    
     <div className="flex min-h-dvh flex-col">
+      
       {screen === "welcome" && (
         <Welcome onStart={() => setScreen("mood")} />
       )}
@@ -35,6 +36,7 @@ export default function App() {
           onBack={() => setScreen("mood")}
         />
       )}
+      
     </div>
   );
 }
